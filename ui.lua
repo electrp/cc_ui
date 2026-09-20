@@ -31,7 +31,7 @@ end
 
 local function calculate_final_size(element, context, dimension)
     local extend = element.extend[dimension]
-    local max = 9999999999
+    local max = 9999999
     if element.max_bounds then
         if element.max_bounds.percentage and element.max_bounds.percentage[dimension] then
             max = context.size * element.max_bounds[dimension]
@@ -45,7 +45,7 @@ local function calculate_final_size(element, context, dimension)
         ret = context.size[dimension]
     -- If fit
     elseif extend == 2 then
-        ret = element.calculated_bounds[dimension]
+        ret = element.computed_bounds[dimension]
     -- If none
     else
         ret = element.min_bounds[dimension]
@@ -72,8 +72,12 @@ local function compute_child_requested_size(element, dimension)
         offset = offset + element.min_bounds[dimension]
     end
 
+    -- If theres no coverage (no %s) proceed
+    if coverage <= 0.01 then
+        coverage = 1
+    end
+
     -- Max bounds may clamp down on our estimate
-    local clamped = element.computed_bounds[dimension] * (1 / coverage)
     if element.max_bounds then
         if element.max_bounds.percentage and element.max_bounds.percentage[dimension] then
             -- Reduce coverage if we are limited by percentage
@@ -87,6 +91,7 @@ local function compute_child_requested_size(element, dimension)
         clamped = element.computed_bounds[dimension] * (1 / coverage)
     end
 
+    print (clamped + offset)
     return clamped + offset
 end
 
@@ -122,7 +127,6 @@ ui.Justification = {
     Top = 0x10, Center = 0x20, Bottom = 0x30
 }
 
-ui.PassthroughColor = 0
 ui.MaxBoundsExactSizing = 1
 ui.MaxBoundsExtend = 1
 
@@ -134,7 +138,7 @@ local calculate_display_bounds = {
     [ui.DisplayType.Box] = no_bound,
 
     [ui.DisplayType.Text] = function(element) 
-        return {#display.text, 1} 
+        return {#element.text, 1} 
     end,
     [ui.DisplayType.Image] = function(element) 
         if element.image then
@@ -164,11 +168,13 @@ local display_element = {
     [ui.DisplayType.Text] = function(element, context)
         local pos = {}
         local out = ""
+        local hor = bit.band(0x0F, element.justification)
+        local ver = bit.band(0xF0, element.justification)
         -- Handle l/r justification and clipping
-        if bit.band(element.justification, Justifaction.Left) then
+        if hor == ui.Justification.Left then
             pos[1] = 0
             out = string.sub(element.text, 1, context.size[1])
-        elseif bit.band(element.justification, ui.Justification.Right) then
+        elseif hor == ui.Justification.Right then
             pos[1] = math.max(0, context.size[1] - #element.text)
             over = #element.text - context.size[1]
             out = string.sub(element.text, math.max(over + 1, 1))
@@ -178,14 +184,14 @@ local display_element = {
             out = string.sub(element.text, math.max(math.floor(over) + 1, 1), #element.text - math.ceil(over))
         end
         -- Handle top/bottom justification
-        if bit.band(element.justification, ui.Justification.Top) then
+        if ver == ui.Justification.Top then
             pos[2] = 0
-        elseif bit.band(element.justification, ui.Justification.Bottom) then
-            pos[2] = context.size[2]
+        elseif ver == ui.Justification.Bottom then
+            pos[2] = context.size[2] - 1
         else
-            pos[2] = context.size[2] / 2
+            pos[2] = context.size[2] / 2 - 1
         end
-        term.setCursorPos(pos[1], pos[2])
+        term.setCursorPos(pos[1] + context.position[1], pos[2] + context.position[2])
         term.write(out)
     end,
     [ui.DisplayType.Image] = function(element, context) 
@@ -199,14 +205,13 @@ local display_element = {
 ui.Element = {
     new = function(table)
         table = table or {}
-        setmetatable(a, self)
-        self.__index = self
+        setmetatable(table, { __index = ui.Element } )
         return table
     end,
 
 
     add_child = function(self, params, front)
-        local sub = Element:new(params)
+        local sub = ui.Element.new(params)
         if front then
             table.insert(self, 1, sub)
         else
@@ -216,15 +221,17 @@ ui.Element = {
 
     -- Calculates bounds for all children
     -- index is 1 or 2, x or y
+    -- TODO: remove dimension and just do both at once
+    -- TODO: Fix?
     calculate_bounds = function(self, dimension)
         if self.dirty.size == true then
             -- Quickly recalculate bounds based on display and min_bounds
-            local display_size = calculate_display_bounds[self.display_type](self.display)[dimension]
-            computed_bounds[dimension] = self.min_bounds[dimension] + display_size
+            local display_size = calculate_display_bounds[self.display_type](self)[dimension]
+            self.computed_bounds[dimension] = self.min_bounds[dimension] + display_size
         end
 
         -- If we care about our children's size
-        if self.extend[dimension] == Extend.Fit and self.dirty.size == true then
+        if self.extend[dimension] == ui.Extend.Fit and self.dirty.size == true then
             -- precompute padding
             local padding
             if type(self.padding) == "number" then
@@ -237,7 +244,11 @@ ui.Element = {
             for i, child in ipairs(self) do
                 child:calculate_bounds(dimension)
                 local c_bound = compute_child_requested_size(child, dimension) + padding
-                c_bound = c_bound + self.index * inner_padding[dimension]
+                if type(self.inner_padding) == "number" then
+                    c_bound = c_bound + self.index[dimension] * self.inner_padding
+                else
+                    c_bound = c_bound + self.index[dimension] * self.inner_padding[dimension]
+                end
                 self.computed_bounds[dimension] = math.max(self.computed_bounds[dimension], c_bound)
             end
         else
@@ -281,13 +292,25 @@ ui.Element = {
             calculate_final_size(self, context, 2),
         }
 
-        local display_context = { context.position, final_size }
+        local display_context = { position = context.position, size = final_size }
         -- use our display
-        display_element(self, display_context)
+        display_element[self.display_type](self, display_context)
 
+        -- Adjust with padding for children
+        if type(self.padding) == "number" then
+            display_context.position[1] = display_context.position[1] + self.padding
+            display_context.position[2] = display_context.position[2] + self.padding
+            display_context.size[1] = display_context.size[1] - self.padding
+            display_context.size[2] = display_context.size[2] - self.padding
+        else
+            display_context.position[1] = display_context.position[1] + self.padding[3]
+            display_context.position[2] = display_context.position[2] + self.padding[1]
+            display_context.size[1] = display_context.size[1] - self.padding[4]
+            display_context.size[2] = display_context.size[2] - self.padding[2]
+        end 
         -- display our children
         for i, child in ipairs(self) do
-            display(child)
+            child:display(display_context)
         end
         
         term.setBackgroundColor(prev_primary)
@@ -308,18 +331,15 @@ ui.Element = {
     padding = 0,
     inner_padding = 0,
     display_type = ui.DisplayType.None,
-    primary_color = ui.PassthroughColor,
-    secondary_color = ui.PassthroughColor,
-    display_type = ui.DisplayType.None,
     text =  "??!!??",
     justification = bit.bor(ui.Justification.Middle, ui.Justification.Center),
     image = nil,
-    primary_color = ui.PassthroughColor,
-    secondary_color = ui.PassthroughColor,
+    primary_color = nil,
+    secondary_color = nil,
     mouse_through = true,
     -- runtime data
     parent = nil,
-    calculated_bounds = {
+    computed_bounds = {
         0, 0
     },
     dirty = {
@@ -381,7 +401,10 @@ extend {
 padding : int
         : { Direction.Up : int, Down : int, Left : int, Right : int }
 inner_padding : int
-              : { Direction.Up : int, Down : int, Left : int, Right : int }
+              : {
+                1 : int,
+                2 : int
+              }
 
 -- how it displays
 display_type : DisplayType = DisplayType.None
@@ -402,7 +425,7 @@ mouse_through : bool = false
 -- These are computed values when displaying the image. This does not necesarially
 -- specify the minimum bounds of the object, but the amount of space it needs to
 -- display itself with its given parameters
-calculated_bounds = {
+computed_bounds = {
     1 : int
     2 : int
 }
@@ -416,3 +439,7 @@ dirty = {
     child_content: bool
 }
 ]]
+
+
+
+
