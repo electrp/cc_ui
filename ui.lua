@@ -165,10 +165,10 @@ local display_element = {
         local pos = {}
         local out = ""
         -- Handle l/r justification and clipping
-        if element.justification & Justifaction.Left then
+        if bit.band(element.justification, Justifaction.Left) then
             pos[1] = 0
             out = string.sub(element.text, 1, context.size[1])
-        elseif element.justification & ui.Justification.Right then
+        elseif bit.band(element.justification, ui.Justification.Right) then
             pos[1] = math.max(0, context.size[1] - #element.text)
             over = #element.text - context.size[1]
             out = string.sub(element.text, math.max(over + 1, 1))
@@ -178,9 +178,9 @@ local display_element = {
             out = string.sub(element.text, math.max(math.floor(over) + 1, 1), #element.text - math.ceil(over))
         end
         -- Handle top/bottom justification
-        if element.justification & ui.Justification.Top then
+        if bit.band(element.justification, ui.Justification.Top) then
             pos[2] = 0
-        elseif element.justification & ui.Justification.Bottom then
+        elseif bit.band(element.justification, ui.Justification.Bottom) then
             pos[2] = context.size[2]
         else
             pos[2] = context.size[2] / 2
@@ -312,7 +312,7 @@ ui.Element = {
     secondary_color = ui.PassthroughColor,
     display_type = ui.DisplayType.None,
     text =  "??!!??",
-    justification = ui.Justification.Middle | ui.Justification.Center,
+    justification = bit.bor(ui.Justification.Middle, ui.Justification.Center),
     image = nil,
     primary_color = ui.PassthroughColor,
     secondary_color = ui.PassthroughColor,
