@@ -15,7 +15,7 @@ rednet.unhost("vault")
 function read_config()
     if fs.exists("vault.cfg") then
         local f = fs.open("vault.cfg", "r")
-        config = textutils.deserializeJSON(f.readAll())
+        config = textutils.unserializeJSON(f.readAll())
         f.close()
     end
 end
