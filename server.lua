@@ -21,9 +21,9 @@ function read_config()
 end
 
 function save_config()
-    f.open("vault.cfg", "w")
-    f.write(textutils.serializeJSON(config))
-    f.close()
+    fs.open("vault.cfg", "w")
+    fs.write(textutils.serializeJSON(config))
+    fs.close()
 end
 
 function start()
