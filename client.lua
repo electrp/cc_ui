@@ -2,8 +2,8 @@ local args = { ... }
 
 local handle = {
     ["ping"] = function()
-        local id = { rednet.lookup("vault", args[2]) }[1]
-        rednet.send(id, "ping", "vault")
+        local id = { rednet.lookup("vault", args[2]) }
+        rednet.send(id[1], "ping", "vault")
         local id, message rednet.recieve("vault")
         print(message)
     end
@@ -11,6 +11,6 @@ local handle = {
 
 if args[1] then
     if handle[args[1]] then
-        handlke[args[1]]()
+        handle[args[1]]()
     end
 end

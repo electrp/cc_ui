@@ -44,6 +44,7 @@ end
 local handle_command = {
     ["ping"] = function(client) 
         rednet.send(client, "pong", "vault")
+        print("Pinged with ".. client)
     end,
 
     ["vault state"] = function(client)
