@@ -11,7 +11,7 @@ function add_vault_display(frame)
     local acc = 1
     local stocks = sp.process_all()
     for name, value in pairs(stocks) do
-        local frame = frame:addFrame({
+        local frame = scroll:addFrame({
             y = acc,
             height = 1
         }):fillParent()
