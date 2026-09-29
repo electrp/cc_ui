@@ -94,7 +94,8 @@ sp.process_all = function()
     -- them to happen a lot faster
     for i = 1, #tickers, 32 do
         local funcs = {}
-        for j, value in ipairs(tickers) do
+        for j = 1, math.max(#tickers - i + 1, 32) do
+            value = tickers[j + i - 1]
             funcs[j] = function() 
                 local inv = sp.process_inventory(tickers[i + j - 1].stock(true))
                 if inv and inv.meta and inv.meta.name then
