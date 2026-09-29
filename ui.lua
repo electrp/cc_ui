@@ -35,6 +35,10 @@ function add_vault_display(frame)
     end
 end
 
-add_vault_display(main)
+local tabs = frame:addTabContrtol({})
+local vaults = tabs:addTab("Vaults")
+local settings = tabs:addTab("Settings")
+
+-- add_vault_display(main)
 
 basalt.run()
