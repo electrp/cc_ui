@@ -1,7 +1,6 @@
 local md5 = require("md5")
 
 local sp = {
-    cache = {}    
 }
 
 local function deep_copy(a)
@@ -19,18 +18,6 @@ local function deep_copy(a)
     return copy
 end
 
-sp.load_cache = function(filename)
-    fs.open(filename, "r")
-    sp.cache = textutils.unserializeJSON(fs.readAll())
-    fs.close()
-end
-
-sp.save_cache = function(file)
-    fs.open(filename, "w")
-    fs.write(textutils.serializeJSON(sp.cache))
-    fs.close()
-end
-
 sp.hash_item = function(item)
     -- We erase but save the count
     local count = item.count
@@ -41,18 +28,6 @@ sp.hash_item = function(item)
     -- reapply count
     item.count = count
     return hash
-end
-
-sp.get_cached_item_hash = function(hash)
-    return sp.cache[hash]
-end
-
-sp.get_cached_item = function(item)
-    return sp.get_cached_item_hash(sp.hash_item(item))
-end
-
-sp.add_cached_item = function(hash, item)
-    sp.cache[]
 end
 
 sp.process_inventory = function(table)
