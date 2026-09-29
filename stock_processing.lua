@@ -94,7 +94,7 @@ sp.process_all = function()
     -- them to happen a lot faster
     for i = 1, #tickers, 32 do
         local funcs = {}
-        for j = 1, math.max(#tickers - i + 1, 32) do
+        for j = 1, math.min(#tickers - i + 1, 32) do
             value = tickers[j + i - 1]
             funcs[j] = function() 
                 local inv = sp.process_inventory(tickers[i + j - 1].stock(true))

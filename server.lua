@@ -57,6 +57,7 @@ end
 
 start()
 print("Vault online. Hosting under \"" .. config.hostname .. "\"!")
+save_config()
 
 while true do 
     local event, p1, p2, p3, p4 = os.pullEvent()
