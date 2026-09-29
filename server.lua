@@ -8,6 +8,7 @@ local config = {
     pulse_timer = 15, -- in seconds
 }
 local stock_data = {}
+local timer_id = 0
 
 -- safety to ensure we aren't hosting
 peripheral.find("modem", rednet.open)
@@ -39,7 +40,7 @@ function start()
     end
     
     stock_data = sp.process_all()
-    os.startTimer(config.pulse_timer)
+    timer_id = os.startTimer(config.pulse_timer)
 end
 
 local handle_command = {
@@ -63,11 +64,11 @@ save_config()
 
 while true do 
     local event, p1, p2, p3, p4 = os.pullEvent()
-    if event == "timer" then
+    if event == "timer" and p2 = timer_id then
         stock_data = sp.process_all()
         rednet.broadcast("vault tick", "vault")
         os.startTimer(config.pulse_timer)
-    elseif event == "rednet_message" and p3 == "vault" then
+    elseif event == "rednet_message" and p3 2= "vault" then
         sender = p1
         message = p2
         local handler = handle_command[message]
