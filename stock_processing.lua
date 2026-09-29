@@ -88,7 +88,7 @@ end
 
 sp.process_all = function()
     local tickers = { peripheral.find("Create_StockTicker") } 
-    out = {}
+    local out = {}
     for i, value in ipairs(tickers) do
         local inv = sp.process_inventory(value.stock(true))
         if inv and inv.meta and inv.meta.name then
