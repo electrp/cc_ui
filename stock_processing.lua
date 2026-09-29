@@ -53,33 +53,52 @@ sp.process_inventory_string = function(response_string)
     return sp.process_inventory(textutils.unserializeJson(response_string))
 end
 
-sp.make_inventory_pool= function(inventories)
-    if #list == 1 then
-        return sp.process_inventory(list[1])
-    elseif #list < 1 then
-        return {}
-    end
 
-    local out = sp.process_inventory(list[1])
-    out.metas[1] = out.meta
-    out.meta = nil
+-- todo later
+-- sp.make_inventory_pool= function(inventories)
+-- --     if #list == 1 then
+-- --         return sp.process_inventory(list[1])
+-- --     elseif #list < 1 then
+-- --         return {}
+-- --     end
 
-    for i=2, #list do
-        local p = sp.process_inventory(list[i])
-        out.metas[i] = p.metas
+-- --     local out = sp.process_inventory(list[1])
+-- --     out.metas[1] = out.meta
+-- --     out.meta = nil
 
-        for hash, item in p do
-            local s_item = out[hash]
-            if s_item ~= nil then
-                s_item.count = s_item.count + item.count
-            else
-                out[hash] = item
-            end
+-- --     for i=2, #list do
+-- --         local p = sp.process_inventory(list[i])
+-- --         out.metas[i] = p.metas
+
+-- --         for hash, item in p do
+-- --             local s_item = out[hash]
+-- --             if s_item ~= nil then
+-- --                 s_item.count = s_item.count + item.count
+-- --             else
+-- --                 out[hash] = item
+-- --             end
+-- --         end
+-- --     end
+
+-- --     return out
+
+--     for hash, v
+-- end
+
+
+sp.process_all = function()
+    local tickers = { peripheral.find("Create_StockTicker") } 
+    out = {}
+    for i, value in ipairs(tickers) do
+        local inv = sp.process_inventory(value.stock(true))
+        if inv and inv.meta and inv.meta.name then
+            out[inv.meta.name] = inv
+        else
+            out[#out + 1] = inv
         end
     end
-
     return out
+    -- apply settings overlay
 end
-
 
 return sp
