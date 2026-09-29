@@ -1,5 +1,7 @@
 local args = { ... }
 
+rednet.open()
+
 local handle = {
     ["ping"] = function()
         local id = { rednet.lookup("vault", args[2]) }

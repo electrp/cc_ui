@@ -10,6 +10,7 @@ local config = {
 local stock_data = {}
 
 -- safety to ensure we aren't hosting
+rednet.open()
 rednet.unhost("vault")
 
 function read_config()
