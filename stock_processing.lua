@@ -64,7 +64,7 @@ sp.make_inventory_pool= function(inventories)
     out.metas[1] = out.meta
     out.meta = nil
 
-    for i=2 in #list do
+    for i=2, #list do
         local p = sp.process_inventory(list[i])
         out.metas[i] = p.metas
 
