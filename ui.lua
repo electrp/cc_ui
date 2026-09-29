@@ -4,27 +4,31 @@ local sp = require("stock_processing")
 local main = basalt.getMainFrame()
 
 function add_vault_display(frame)
-    local scroll = frame:addScrollFrame({})
+    local scroll = frame:addFrame({
+        scrollable = true,
+        scrollbar = "auto"
+    })
     scroll:fillParent()
+    local flex = scroll:addFlex({
+        direction = "row"
+    })
     
-
-    local acc = 1
     local stocks = sp.process_all()
     for name, value in pairs(stocks) do
-        local frame = scroll:addFrame({
-            y = acc,
-            height = 1
-        })
-        local button = frame:addButton({
+        local row = flex:addRow({
             height = 1,
-            width = scroll.width - 4
+            width = basalt.fill(),
+            gap = 1,
         })
-        local percent = frame:addLabel({
-            x = scroll.width - 4,
-            width = 4,
+        local button = row:addButton({
+            height = 1,
+            width = basalt.fill()
+        })
+        local percent = row:addLabel({
+            width = 4
+            height = 1
             text = "50"
         })
-        acc = acc + 1
         if type(name) == "number" then
             button:setText("LOST: " .. tostring(name))
         else
