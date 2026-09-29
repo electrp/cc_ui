@@ -1,6 +1,7 @@
 local args = { ... }
 
-rednet.open()
+rednet.open(peripheral.find("modem"))
+
 
 local handle = {
     ["ping"] = function()
