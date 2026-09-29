@@ -10,7 +10,7 @@ local config = {
 local stock_data = {}
 
 -- safety to ensure we aren't hosting
-rednet.open(peripheral.find("modem"))
+peripheral.find("modem", rednet.open)
 rednet.unhost("vault")
 
 function read_config()

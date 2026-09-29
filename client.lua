@@ -1,13 +1,13 @@
 local args = { ... }
 
-rednet.open(peripheral.find("modem"))
+peripheral.find("modem", rednet.open)
 
 
 local handle = {
     ["ping"] = function()
         local id = { rednet.lookup("vault", args[2]) }
         rednet.send(id[1], "ping", "vault")
-        local id, message rednet.recieve("vault")
+        local id, message rednet.receive("vault")
         print(message)
     end
 }
