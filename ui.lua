@@ -4,21 +4,17 @@ local sp = require("stock_processing")
 local main = basalt.getMainFrame()
 
 function add_vault_display(frame)
-    local scroll = frame:addFrame({
-        scrollable = true,
-        scrollbar = "auto"
-    })
-    scroll:fillParent()
-    local flex = scroll:addFlex({
-        direction = "row"
+    local scroll = frame:addColumn({
+        scrollble = true,
+        scrollbar = "auto",
+        width = basalt.fill(),
+        height = basalt.fill()
     })
     
     local stocks = sp.process_all()
     for name, value in pairs(stocks) do
-        local row = flex:addRow({
-            height = 1,
-            width = basalt.fill(),
-            gap = 1,
+        local row = flex:addFrame({
+            height = 1
         })
         local button = row:addButton({
             height = 1,
