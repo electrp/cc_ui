@@ -13,17 +13,19 @@ function add_vault_display(frame)
     
     local stocks = sp.process_all()
     for name, value in pairs(stocks) do
-        local row = flex:addFrame({
+        local row = scroll:addRow({
             height = 1
         })
         local button = row:addButton({
             height = 1,
-            width = basalt.fill()
+            width = basalt.fill(),
+            justification = "left"
         })
         local percent = row:addLabel({
-            width = 4
-            height = 1
-            text = "50"
+            width = 2,
+            height = 1,
+            text = "50",
+            justification = "center"
         })
         if type(name) == "number" then
             button:setText("LOST: " .. tostring(name))
