@@ -12,13 +12,16 @@ function add_vault_display(frame)
     local stocks = sp.process_all()
     for name, value in pairs(stocks) do
         local frame = frame:addFrame({
-            y = acc
+            y = acc,
             height = 1
         }):fillParent()
         local button = frame:addButton({
             height = 1,
-            width = scroll.width - 4,
-            y = acc
+            width = scroll.width - 4
+        })
+        local percent = frame:addLabel({
+            x = scroll.width - 4,
+            width = 4
         })
         acc = acc + 1
         if type(name) == "number" then
