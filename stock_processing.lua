@@ -89,13 +89,22 @@ end
 sp.process_all = function()
     local tickers = { peripheral.find("Create_StockTicker") } 
     local out = {}
-    for i, value in ipairs(tickers) do
-        local inv = sp.process_inventory(value.stock(true))
-        if inv and inv.meta and inv.meta.name then
-            out[inv.meta.name] = inv
-        else
-            out[#out + 1] = inv
+    -- use parallel to do this a lot faster, in chunks of 32
+    -- stock tickers take around a tick to report their stock at minimum, this queues 
+    -- them to happen a lot faster
+    for i = 1, #tickers, 32 do
+        local funcs = {}
+        for j, value in ipairs(tickers) do
+            funcs[j] = function() 
+                local inv = sp.process_inventory(tickers[i + j - 1].stock(true))
+                if inv and inv.meta and inv.meta.name then
+                    out[inv.meta.name] = inv
+                else
+                    out[i + j - 1] = inv
+                end
+            end
         end
+        parallel.waitForAll(table.unpack(funcs))
     end
     return out
     -- apply settings overlay

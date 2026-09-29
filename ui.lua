@@ -36,8 +36,9 @@ function add_vault_display(frame)
 end
 
 local tabs = main:addTabContrtol({})
-local vaults = tabs:addTab("Vaults")
-local settings = tabs:addTab("Settings")
+local vaults = tabs:addTab("V")
+add_vault_display(vaults)
+local settings = tabs:addTab("S")
 
 -- add_vault_display(main)
 
