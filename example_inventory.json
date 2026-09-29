@@ -1,0 +1,613 @@
+[
+    {
+        "tags": {},
+        "name": "hybrid-aquatic:sea_message_book",
+        "itemGroups": {},
+        "maxCount": 64,
+        "count": 1,
+        "nbt": "462220f2932b0aff290fb8957944a081",
+        "displayName": "Sea Message"
+    },
+    {
+        "tags": {},
+        "name": "hybrid-aquatic:sea_message_book",
+        "itemGroups": {},
+        "maxCount": 64,
+        "count": 1,
+        "nbt": "8ac7f405a8d49ca7bd5b6bf8ff9d8f45",
+        "displayName": "Sea Message"
+    },
+    {
+        "tags": {},
+        "name": "hybrid-aquatic:sea_message_book",
+        "itemGroups": {},
+        "maxCount": 64,
+        "count": 1,
+        "nbt": "fe66c48fda547991f72b9f85cec4d39f",
+        "displayName": "Sea Message"
+    },
+    {
+        "tags": {},
+        "name": "hybrid-aquatic:sea_message_book",
+        "itemGroups": {},
+        "maxCount": 64,
+        "count": 1,
+        "nbt": "441ee2278b858b4c606d1303f68189a2",
+        "displayName": "Sea Message"
+    },
+    {
+        "tags": {},
+        "name": "hybrid-aquatic:sea_message_book",
+        "itemGroups": {},
+        "maxCount": 64,
+        "count": 1,
+        "nbt": "42187dac4fec9d2123a6e6e381dbe1ad",
+        "displayName": "Sea Message"
+    },
+    {
+        "name": "minecraft:redstone",
+        "itemGroups": {},
+        "tags": {
+            "c:dusts": true,
+            "c:redstone_dusts": true,
+            "minecraft:trim_materials": true,
+            "c:dusts/redstone": true
+        },
+        "count": 5130,
+        "maxCount": 64,
+        "displayName": "Redstone Dust"
+    },
+    {
+        "name": "minecraft:gold_block",
+        "itemGroups": {},
+        "tags": {
+            "minecraft:piglin_loved": true,
+            "c:gold_blocks": true,
+            "c:storage_blocks": true
+        },
+        "count": 40,
+        "maxCount": 64,
+        "displayName": "Block of Gold"
+    },
+    {
+        "name": "minecraft:deepslate_diamond_ore",
+        "itemGroups": {},
+        "tags": {
+            "minecraft:diamond_ores": true,
+            "c:diamond_ores": true,
+            "c:ores": true,
+            "c:ores_in_ground/deepslate": true,
+            "balm:ores": true,
+            "c:ore_rates/singular": true
+        },
+        "count": 6,
+        "maxCount": 64,
+        "displayName": "Deepslate Diamond Ore"
+    },
+    {
+        "name": "minecraft:gold_ore",
+        "itemGroups": {},
+        "tags": {
+            "c:ores_in_ground/stone": true,
+            "minecraft:gold_ores": true,
+            "c:gold_ores": true,
+            "c:ores": true,
+            "minecraft:piglin_loved": true,
+            "betterend:alloying_gold": true,
+            "balm:ores": true,
+            "c:ore_rates/singular": true
+        },
+        "count": 3,
+        "maxCount": 64,
+        "displayName": "Gold Ore"
+    },
+    {
+        "name": "betternether:bone_mushroom",
+        "itemGroups": {},
+        "tags": {
+            "c:compostable": true
+        },
+        "count": 15,
+        "maxCount": 64,
+        "displayName": "Bone Mushroom Spores"
+    },
+    {
+        "name": "minecraft:spider_eye",
+        "itemGroups": {},
+        "tags": {
+            "c:foods": true
+        },
+        "count": 7,
+        "maxCount": 64,
+        "displayName": "Spider Eye"
+    },
+    {
+        "enchantments": [
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            },
+            {
+                "level": 2,
+                "name": "minecraft:unbreaking",
+                "displayName": "Unbreaking II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "f93772ebce3bbfa32664f2d4c313df2a",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "enchantments": [
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            },
+            {
+                "level": 1,
+                "name": "minecraft:fortune",
+                "displayName": "Fortune I"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "9baabb3903f11fe7c4e34589495d7858",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "durability": 0.92307692307692,
+        "maxDamage": 59,
+        "nbt": "824e7868a9aeb9ec7d2d0a6d8894fd3a",
+        "displayName": "Wooden Pickaxe",
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "maxCount": 1,
+        "enchantments": [
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            }
+        ],
+        "count": 1,
+        "damage": 3
+    },
+    {
+        "enchantments": [
+            {
+                "level": 1,
+                "name": "minecraft:fortune",
+                "displayName": "Fortune I"
+            },
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "c3604aac94318b9943b6bc4942f7ebc5",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "durability": 0.69230769230769,
+        "maxDamage": 59,
+        "nbt": "5bea89861246b43819d2ed1844f64bcc",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 19
+    },
+    {
+        "enchantments": [
+            {
+                "level": 2,
+                "name": "minecraft:unbreaking",
+                "displayName": "Unbreaking II"
+            },
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "66cfeac85b7e7092f2b14552e11f9435",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 2,
+        "damage": 0
+    },
+    {
+        "enchantments": [
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "16454b9fb4d37d0870775622d58b5030",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 4,
+        "damage": 0
+    },
+    {
+        "enchantments": [
+            {
+                "level": 1,
+                "name": "minecraft:silk_touch",
+                "displayName": "Silk Touch"
+            },
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "fdd87cbba6738c1e8f8c374021837fff",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "enchantments": [
+            {
+                "level": 1,
+                "name": "minecraft:unbreaking",
+                "displayName": "Unbreaking I"
+            },
+            {
+                "level": 2,
+                "name": "minecraft:efficiency",
+                "displayName": "Efficiency II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "fcf5857178afc8f4c9d887babd2c5d8b",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "enchantments": [
+            {
+                "level": 2,
+                "name": "minecraft:unbreaking",
+                "displayName": "Unbreaking II"
+            }
+        ],
+        "maxDamage": 59,
+        "nbt": "f17a1a33a8476a823ee2180f599f7c4d",
+        "displayName": "Wooden Pickaxe",
+        "name": "minecraft:wooden_pickaxe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "minecraft:pickaxes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:pickaxes": true,
+            "minecraft:cluster_max_harvestables": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 3,
+        "damage": 0
+    },
+    {
+        "name": "betternether:cincinnasite",
+        "itemGroups": {},
+        "tags": {},
+        "count": 23,
+        "maxCount": 64,
+        "displayName": "Cincinnasite"
+    },
+    {
+        "name": "minecraft:dead_horn_coral_block",
+        "itemGroups": {},
+        "tags": {},
+        "count": 152,
+        "maxCount": 64,
+        "displayName": "Dead Horn Coral Block"
+    },
+    {
+        "name": "create:schematic_and_quill",
+        "itemGroups": {},
+        "tags": {},
+        "count": 1,
+        "maxCount": 1,
+        "displayName": "Schematic And Quill"
+    },
+    {
+        "name": "create:precision_mechanism",
+        "itemGroups": {},
+        "tags": {},
+        "count": 10,
+        "maxCount": 64,
+        "displayName": "Precision Mechanism"
+    },
+    {
+        "name": "minecraft:flint",
+        "itemGroups": {},
+        "tags": {},
+        "count": 10129,
+        "maxCount": 64,
+        "displayName": "Flint"
+    },
+    {
+        "name": "create:copper_casing",
+        "itemGroups": {},
+        "tags": {
+            "create:casing": true
+        },
+        "count": 6,
+        "maxCount": 64,
+        "displayName": "Copper Casing"
+    },
+    {
+        "name": "minecraft:soul_sand",
+        "itemGroups": {},
+        "tags": {
+            "minecraft:soul_fire_base_blocks": true,
+            "c:soul_ground": true
+        },
+        "count": 256,
+        "maxCount": 64,
+        "displayName": "Soul Sand"
+    },
+    {
+        "name": "minecraft:lantern",
+        "itemGroups": {},
+        "tags": {},
+        "count": 20,
+        "maxCount": 64,
+        "displayName": "Lantern"
+    },
+    {
+        "name": "minecraft:moss_block",
+        "itemGroups": {},
+        "tags": {
+            "minecraft:dirt": true
+        },
+        "count": 4,
+        "maxCount": 64,
+        "displayName": "Moss Block"
+    },
+    {
+        "name": "minecraft:deepslate_iron_ore",
+        "itemGroups": {},
+        "tags": {
+            "c:iron_ores": true,
+            "minecraft:iron_ores": true,
+            "betterend:alloying_iron": true,
+            "c:ores": true,
+            "c:ores_in_ground/deepslate": true,
+            "balm:ores": true,
+            "c:ore_rates/singular": true
+        },
+        "count": 9,
+        "maxCount": 64,
+        "displayName": "Deepslate Iron Ore"
+    },
+    {
+        "name": "minecraft:poisonous_potato",
+        "itemGroups": {},
+        "tags": {
+            "c:foods": true
+        },
+        "count": 4,
+        "maxCount": 64,
+        "displayName": "Poisonous Potato"
+    },
+    {
+        "enchantments": [
+            {
+                "level": 1,
+                "name": "minecraft:silk_touch",
+                "displayName": "Silk Touch"
+            },
+            {
+                "level": 1,
+                "name": "minecraft:mending",
+                "displayName": "Mending"
+            }
+        ],
+        "maxDamage": 131,
+        "nbt": "4d73ca9cff091e840e5adc69aca82d04",
+        "displayName": "Stone Shovel",
+        "name": "minecraft:stone_shovel",
+        "itemGroups": {},
+        "tags": {
+            "c:shovels": true,
+            "minecraft:shovels": true,
+            "minecraft:breaks_decorated_pots": true,
+            "c:tools": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "name": "minecraft:iron_nugget",
+        "itemGroups": {},
+        "tags": {
+            "balm:nuggets": true,
+            "balm:iron_nuggets": true,
+            "c:nuggets": true,
+            "c:iron_nuggets": true
+        },
+        "count": 6,
+        "maxCount": 64,
+        "displayName": "Iron Nugget"
+    },
+    {
+        "enchantments": [
+            {
+                "level": 3,
+                "name": "minecraft:fortune",
+                "displayName": "Fortune III"
+            }
+        ],
+        "maxDamage": 32,
+        "nbt": "aaf319f9377c612305e87f74e248b94e",
+        "displayName": "Golden Hoe",
+        "name": "minecraft:golden_hoe",
+        "itemGroups": {},
+        "tags": {
+            "c:tools": true,
+            "c:hoes": true,
+            "minecraft:piglin_loved": true,
+            "minecraft:hoes": true,
+            "minecraft:breaks_decorated_pots": true,
+            "minecraft:tools": true
+        },
+        "maxCount": 1,
+        "count": 1,
+        "damage": 0
+    },
+    {
+        "name": "create:redstone_link",
+        "itemGroups": {},
+        "tags": {},
+        "count": 2,
+        "maxCount": 64,
+        "displayName": "Redstone Link"
+    },
+    {
+        "tags": {
+            "c:rods": true,
+            "c:wooden_rods": true,
+            "balm:wooden_rods": true,
+            "c:container": true
+        },
+        "name": "minecraft:stick",
+        "itemGroups": {},
+        "maxCount": 64,
+        "count": 1,
+        "nbt": "814163691e7594182bcf696d6941410d",
+        "displayName": "node id 11"
+    },
+    {
+        "name": "minecraft:amethyst_cluster",
+        "itemGroups": {},
+        "tags": {
+            "c:clusters": true
+        },
+        "count": 2,
+        "maxCount": 64,
+        "displayName": "Amethyst Cluster"
+    },
+    {
+        "name": "create:limestone",
+        "itemGroups": {},
+        "tags": {
+            "create:stone_types/limestone": true
+        },
+        "count": 17,
+        "maxCount": 64,
+        "displayName": "Limestone"
+    }
+]

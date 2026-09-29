@@ -1,3 +1,5 @@
+math = require("math")
+
 ui = { version = "0.0.1" }
 
 -- The data structures are only here for visibility, arangement can be converted to visibility
@@ -29,29 +31,34 @@ local function apply_padding(rect, padding)
     end
 end
 
-local function calculate_final_size(element, context, dimension)
-    local extend = element.extend[dimension]
-    local max = 9999999
-    if element.max_bounds then
-        if element.max_bounds.percentage and element.max_bounds.percentage[dimension] then
-            max = context.size * element.max_bounds[dimension]
-        else
-            max = element.max_bounds[dimension]
-        end
-    end
-    local ret
-    -- If fill
-    if extend == 3 then
-        ret = context.size[dimension]
-    -- If fit
-    elseif extend == 2 then
-        ret = element.computed_bounds[dimension]
-    -- If none
-    else
-        ret = element.min_bounds[dimension]
-    end
-    return math.min(max, ret)
-end
+-- bounds is rect
+-- local function calculate_final_size(element, bounds)
+    
+-- end
+
+-- local function calculate_final_size(element, context, dimension)
+--     local extend = element.extend[dimension]
+--     local max = 9999999
+--     if element.max_bounds then
+--         if element.max_bounds.percentage and element.max_bounds.percentage[dimension] then
+--             max = context.size * element.max_bounds[dimension]
+--         else
+--             max = element.max_bounds[dimension]
+--         end
+--     end
+--     local ret
+--     -- If fill
+--     if extend == 3 then
+--         ret = context.size[dimension]
+--     -- If fit
+--     elseif extend == 2 then
+--         ret = element.computed_bounds[dimension]
+--     -- If none
+--     else
+--         ret = element.min_bounds[dimension]
+--     end
+--     return math.min(max, ret)
+-- end
 
 -- Computes our minimum size basedon how much the child requests from us
 local function compute_child_requested_size(element, dimension)
@@ -62,14 +69,14 @@ local function compute_child_requested_size(element, dimension)
     local offset = 0
 
     if element.position.percentage and element.position.percentage[dimension] then
-        coverage = coverage + element.position.percentage[dimension]
+        coverage = coverage + element.position[dimension]
     else
-        offset = offset + element.position[dimension] 
+        offset = offset + element.position[dimension] - 1
     end
     if element.min_bounds.percentage and element.min_bounds.percentage[dimension] then
-        coverage = coverage + element.min_bounds.percentage[dimension]
+        coverage = coverage + element.min_bounds[dimension]
     else
-        offset = offset + element.min_bounds[dimension]
+        offset = offset + element.min_bounds[dimension] - 1
     end
 
     -- If theres no coverage (no %s) proceed
@@ -91,7 +98,7 @@ local function compute_child_requested_size(element, dimension)
         clamped = element.computed_bounds[dimension] * (1 / coverage)
     end
 
-    print (clamped + offset)
+    print ("clo " .. coverage .. "  " .. clamped .. "  " .. offset)
     return clamped + offset
 end
 
@@ -104,10 +111,10 @@ ui.Extend = {
 }
 
 ui.Direction = {
-    Up = 1,
-    Down = 2,
-    Left = 3,
-    Right = 4,
+    Up = 0x01
+    Down = 0x02,
+    Left = 0x04,
+    Right = 0x08,
 }
 
 ui.DisplayType = {
@@ -125,6 +132,11 @@ ui.DisplayType = {
 ui.Justification = {
     Left = 0x01, Middle = 0x02, Right = 0x03,
     Top = 0x10, Center = 0x20, Bottom = 0x30
+}
+
+ui.PositionUnit = {
+    Pixel = 1,
+    Percent = 2,
 }
 
 ui.MaxBoundsExactSizing = 1
@@ -189,7 +201,7 @@ local display_element = {
         elseif ver == ui.Justification.Bottom then
             pos[2] = context.size[2] - 1
         else
-            pos[2] = context.size[2] / 2 - 1
+            pos[2] = math.ceil(context.size[2] / 2) - 1
         end
         term.setCursorPos(pos[1] + context.position[1], pos[2] + context.position[2])
         term.write(out)
@@ -225,11 +237,17 @@ ui.Element = {
     -- TODO: Fix?
     calculate_bounds = function(self, dimension)
         if self.dirty.size == true then
-            -- Quickly recalculate bounds based on display and min_bounds
             local display_size = calculate_display_bounds[self.display_type](self)[dimension]
-            self.computed_bounds[dimension] = self.min_bounds[dimension] + display_size
-        end
 
+            if self.extend[dimension] == ui.Extend.Fit then
+
+            else
+                -- Quickly recalculate bounds based on display and min_bounds
+                self.computed_bounds[dimension] = math.max(self.min_bounds[dimension], display_size)
+            end
+
+        
+        
         -- If we care about our children's size
         if self.extend[dimension] == ui.Extend.Fit and self.dirty.size == true then
             -- precompute padding
@@ -239,17 +257,21 @@ ui.Element = {
             else    
                 padding = self.padding[1 + (dimension - 1) * 2] + self.padding[2 + (dimension - 1) * 2]
             end
-
             -- Check the children for their computed sizes
+            -- Grid indexes 
+            local indices = { }
             for i, child in ipairs(self) do
                 child:calculate_bounds(dimension)
-                local c_bound = compute_child_requested_size(child, dimension) + padding
+                local c_bound = compute_child_requested_size(child, dimension)
                 if type(self.inner_padding) == "number" then
                     c_bound = c_bound + self.index[dimension] * self.inner_padding
                 else
                     c_bound = c_bound + self.index[dimension] * self.inner_padding[dimension]
                 end
-                self.computed_bounds[dimension] = math.max(self.computed_bounds[dimension], c_bound)
+                indices[self.index[dimension]] = math.max(indices[self.index[dimension]], c_bound)
+            end
+            for i, bound in ipairs(indices) do
+                
             end
         else
             for i, child in ipairs(self) do
@@ -300,13 +322,13 @@ ui.Element = {
         if type(self.padding) == "number" then
             display_context.position[1] = display_context.position[1] + self.padding
             display_context.position[2] = display_context.position[2] + self.padding
-            display_context.size[1] = display_context.size[1] - self.padding
-            display_context.size[2] = display_context.size[2] - self.padding
+            display_context.size[1] = display_context.size[1] - self.padding * 2
+            display_context.size[2] = display_context.size[2] - self.padding * 2
         else
             display_context.position[1] = display_context.position[1] + self.padding[3]
             display_context.position[2] = display_context.position[2] + self.padding[1]
-            display_context.size[1] = display_context.size[1] - self.padding[4]
-            display_context.size[2] = display_context.size[2] - self.padding[2]
+            display_context.size[1] = display_context.size[1] - self.padding[4] - self.padding[3]
+            display_context.size[2] = display_context.size[2] - self.padding[2] - self.padding[1]
         end 
         -- display our children
         for i, child in ipairs(self) do
@@ -325,13 +347,15 @@ ui.Element = {
     -- prototype data, see below for more details
     hide = false,
     position = { 1, 1 },
+    position_unit = PositionUnit.Pixel,
     index = { 1, 1 },
     min_bounds = { 1, 1 },
+    min_bounds_unit = PositionUnit.Pixel,
     extend = { ui.Extend.Fit, ui.Extend.Fit},
     padding = 0,
     inner_padding = 0,
     display_type = ui.DisplayType.None,
-    text =  "??!!??",
+    text = "??!!??",
     justification = bit.bor(ui.Justification.Middle, ui.Justification.Center),
     image = nil,
     primary_color = nil,
@@ -355,19 +379,18 @@ return ui
 
 hide : bool = false
 
--- Array with table component
+-- Vector2
 position = {
     -- x and y position
     1 : int = 1
     2 : int = 1
 
-    -- Specify either pixel or percent based positioning
-    percentage : nil
-               : { 1 : bool, 2 : bool }
+    -- Specify either pixel, percent, or index based positioning
 }
+position_unit : PositionUnit = Pixel
+              : { 1 : PositionUnit, 2 : PositionUnit }
 
-
--- Used for inner padding. If you have a grid, use this to specify
+-- If you have a grid, use this to specify
 -- where in the grid you are.
 index = {
     1 : int = 1
@@ -377,11 +400,10 @@ index = {
 min_bounds = {
     1 : int
     2 : int
-
-    -- Specify either pixel or percent based positioning
-    percentage : nil
-               : { 1 : bool, 2 : bool }
 }
+min_bounds_unit : PositionUnit = Pixel
+                : { 1 : PositionUnit, 2 : PositionUnit }
+
 max_bounds : nil
            : {
                  1 : int
