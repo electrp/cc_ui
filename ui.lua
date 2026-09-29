@@ -21,7 +21,7 @@ function add_vault_display(frame)
         })
         local percent = frame:addLabel({
             x = scroll.width - 4,
-            width = 4
+            width = 4,
             text = "50"
         })
         acc = acc + 1
