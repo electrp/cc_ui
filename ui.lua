@@ -14,7 +14,7 @@ function add_vault_display(frame)
         local frame = scroll:addFrame({
             y = acc,
             height = 1
-        }):fillParent()
+        })
         local button = frame:addButton({
             height = 1,
             width = scroll.width - 4
