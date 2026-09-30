@@ -64,7 +64,7 @@ save_config()
 
 while true do 
     local event, p1, p2, p3, p4 = os.pullEvent()
-    if event == "timer" and p2 = timer_id then
+    if event == "timer" and p2 == timer_id then
         stock_data = sp.process_all()
         rednet.broadcast("vault tick", "vault")
         os.startTimer(config.pulse_timer)
