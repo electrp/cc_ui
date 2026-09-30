@@ -80,9 +80,9 @@ function local_server()
             message = p2
             local handler = handle_command[message]
             if handler == nil then
-                rednet.send(client, "unknown command", "vault")
+                rednet.send(sender, "unknown command", "vault")
             end
-            rednet.send(client, handler(sender), "vault")
+            rednet.send(sender, handler(sender), "vault")
         end
     end
 end
