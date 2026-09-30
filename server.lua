@@ -86,3 +86,4 @@ function local_server()
         end
     end
 end
+local_server()
