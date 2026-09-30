@@ -65,8 +65,7 @@ function add_vault_display(frame)
         height = basalt.fill()
     })
     
-    local stocks = sp.process_all()
-    for name, value in pairs(stocks) do
+    for name, value in pairs(vault_state) do
         local row = scroll:addRow({
             height = 1
         })
@@ -160,10 +159,10 @@ end
 function make_home(frame)
     local v = frame:addColumn({height = basalt.fill(), width = basalt.fill()})
     make_connection_dialog(v)
-    v:addButton({ text = "Vault Display" , width = basalt.fill(), height = basalt.auto() })
-    v:addButton({ text = "Vault Display" , width = basalt.fill(), height = basalt.auto() })
-    v:addButton({ text = "Vault Display" , width = basalt.fill(), height = basalt.auto() })
-    v:addButton({ text = "Vault Display" , width = basalt.fill(), height = basalt.auto() })
+    v:addButton({ text = "Vaults" , width = basalt.fill(), height = basalt.auto() })
+    :onClick(function(self, button, x, y) 
+        push_page(add_vault_display, "Vaults")
+    end)
 end
 
 
