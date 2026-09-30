@@ -28,7 +28,6 @@ local main = basalt.getMainFrame()
 
 -- states
 local navigation = basalt.state({})
-local connection_timer = basalt.state(0)
 local connected_computer = basalt.state(nil)
 local vault_state = basalt.state(nil)
 
@@ -103,23 +102,11 @@ function set_hostname(hostname)
         rednet.send(connected_computer:get(), "get pulse timer", "vault")
     end
 end
-basalt.schedule(function()
-    while true do
-        if connected_computer then
-            sleep(1)
-            connection_timer:set(connection_timer:get() + 1)
-        else
-            try_connect()
-            sleep(3)
-        end
 
-    end
-end)
 -- handle messages
 local message_handle = {
     ["vault state response"] = function(data) 
         vault_state:set(data)
-        connection_timer:set(0)
     end,
     ["pulse timer"] = function(data)
         pulse_timer:set(data)
@@ -223,35 +210,19 @@ local status = bottom:addRow({
     width = basalt.fill()
 })
 
--- connection indicator
-local pulse_timer = nil
-
-local connection_indicator = status:addLabel({
-    text = basalt.computed(function()
-        if connected_computer:get() then
-            return connection_timer:get()
-        else
-            return "!!!"
-        end
-    end),
-    width = 3,
-    background = basalt.computed(function()
-        if connected_computer:get() then
-            return colors.green
-        else
-            return colors.red
-        end
-    end),
-    align = "center",
-})
-
 -- settings
 bottom:addButton({
     text = "@",
     width = 1,
     height = 1,
     align = "right",
-    background = colors.blue
+    background = basalt.computed(function()
+        if connected_computer:get() then
+            return colors.blue
+        else
+            return colors.red
+        end
+    end)
 })
 
 -- update connection
