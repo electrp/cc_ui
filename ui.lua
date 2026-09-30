@@ -130,8 +130,8 @@ local message_handle = {
 }
 basalt.schedule(function()
     while true do
-        local event, p1, p2, p3 = os.pullEvent("rednet_receive")
-        if connected_computer:get() and p1 == connected_computer:get() and p3 == vault then
+        local event, p1, p2, p3 = os.pullEvent("rednet_message")
+        if connected_computer:get() and p1 == connected_computer:get() and p3 == "vault" then
             local message = p2
             if message_handle[message.type] then
                 message_handle[message.type](message.data)
