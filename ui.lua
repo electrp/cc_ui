@@ -65,7 +65,7 @@ function add_vault_display(frame)
         height = basalt.fill()
     })
     
-    for name, value in pairs(vault_state) do
+    for name, value in pairs(vault_state:get()) do
         local row = scroll:addRow({
             height = 1
         })
