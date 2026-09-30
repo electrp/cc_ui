@@ -216,7 +216,7 @@ bottom:addButton({
     height = 1,
     align = "right",
     background = basalt.computed(function()
-        if connected_computer:get() then
+        if connected_computer:get() and vault_state:get() then
             return colors.blue
         else
             return colors.red
