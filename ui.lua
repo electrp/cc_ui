@@ -128,11 +128,14 @@ local message_handle = {
         rednet.send(connected_computer:get(), "vault state", "vault")
     end
 }
-main:on("rednet_message", function(self, p1, p2, p3)
-    if p1 == connected_computer:get() and p3 == vault then
-        local message = p2
-        if message_handle[message.type] then
-            message_handle[message.type](message.data)
+basalt.schedule(function()
+    while true do
+        local event, p1, p2, p3 = os.pullEvent("rednet_recieve")
+        if connected_computer:get() and p1 == connected_computer:get() and p3 == vault then
+            local message = p2
+            if message_handle[message.type] then
+                message_handle[message.type](message.data)
+            end
         end
     end
 end)
@@ -226,7 +229,8 @@ local pulse_timer = nil
 local connection_indicator = status:addLabel({
     text = basalt.computed(function()
         if connected_computer:get() then
-            return connection_timer:get()
+            -- return connection_timer:get()
+            return connected_computer:get()
         else
             return "!!!"
         end
