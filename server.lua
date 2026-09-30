@@ -1,18 +1,18 @@
 local basalt = require("basalt")
 local sp = require("stock_processing")
 
+local server = {}
 
 local config = {
     -- generate a random hostname if ones not set
     hostname = tostring(math.random(999999)),
     pulse_timer = 15, -- in seconds
 }
+
 local stock_data = {}
 local timer_id = 0
 
 -- safety to ensure we aren't hosting
-peripheral.find("modem", rednet.open)
-rednet.unhost("vault")
 
 function read_config()
     if fs.exists("vault.cfg") then
@@ -29,6 +29,8 @@ function save_config()
 end
 
 function start()
+    peripheral.find("modem", rednet.open)
+    rednet.unhost("vault")
     read_config()
 
     local success, result = pcall(function() 
@@ -45,12 +47,15 @@ end
 
 local handle_command = {
     ["ping"] = function(client) 
-        rednet.send(client, {type = "pong"}, "vault")
-        print("Pinged with ".. client)
+        return {type = "pong"}
     end,
 
     ["vault state"] = function(client)
-        rednet.send(client, {type = "vault state response", data = stock_data}, "vault")
+       return {type = "vault state response", data = stock_data}
+    end,
+
+    ["get pulse timer"] = function(client)
+        return {type = "pulse timer", data = config.pulse_timer }
     end
 }
 
@@ -58,24 +63,26 @@ function stop()
     save_config()
 end
 
-start()
-print("Vault online. Hosting under \"" .. config.hostname .. "\"!")
-rednet.broadcast({message = "vault online", hostname = config.hostname}, "vault")
-save_config()
+function local_server()
+    start()
+    print("Vault online. Hosting under \"" .. config.hostname .. "\"!")
+    rednet.broadcast({message = "vault online", hostname = config.hostname}, "vault")
+    save_config()
 
-while true do 
-    local event, p1, p2, p3, p4 = os.pullEvent()
-    if event == "timer" and p1 == timer_id then
-        stock_data = sp.process_all()
-        rednet.broadcast({type = "vault tick"}, "vault")
-        timer_id = os.startTimer(config.pulse_timer)
-    elseif event == "rednet_message" and p3 == "vault" then
-        sender = p1
-        message = p2
-        local handler = handle_command[message]
-        if handler == nil then
-            rednet.send(client, "unknown command", "vault")
+    while true do 
+        local event, p1, p2, p3, p4 = os.pullEvent()
+        if event == "timer" and p1 == timer_id then
+            stock_data = sp.process_all()
+            rednet.broadcast({type = "vault tick"}, "vault")
+            timer_id = os.startTimer(config.pulse_timer)
+        elseif event == "rednet_message" and p3 == "vault" then
+            sender = p1
+            message = p2
+            local handler = handle_command[message]
+            if handler == nil then
+                rednet.send(client, "unknown command", "vault")
+            end
+            rednet.send(client, handler(sender), "vault")
         end
-        handler(sender)
     end
 end
