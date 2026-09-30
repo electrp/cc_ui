@@ -45,12 +45,12 @@ end
 
 local handle_command = {
     ["ping"] = function(client) 
-        rednet.send(client, "pong", "vault")
+        rednet.send(client, {type = "pong"}, "vault")
         print("Pinged with ".. client)
     end,
 
     ["vault state"] = function(client)
-        rednet.send(client, stock_data, "vault")
+        rednet.send(client, {type = "vault state response", data = stock_data}, "vault")
     end
 }
 
@@ -60,15 +60,16 @@ end
 
 start()
 print("Vault online. Hosting under \"" .. config.hostname .. "\"!")
+rednet.broadcast({message = "vault online", hostname = config.hostname}, "vault")
 save_config()
 
 while true do 
     local event, p1, p2, p3, p4 = os.pullEvent()
-    if event == "timer" and p2 == timer_id then
+    if event == "timer" and p1 == timer_id then
         stock_data = sp.process_all()
-        rednet.broadcast("vault tick", "vault")
-        os.startTimer(config.pulse_timer)
-    elseif event == "rednet_message" and p3 2= "vault" then
+        rednet.broadcast({type = "vault tick"}, "vault")
+        timer_id = os.startTimer(config.pulse_timer)
+    elseif event == "rednet_message" and p3 == "vault" then
         sender = p1
         message = p2
         local handler = handle_command[message]
