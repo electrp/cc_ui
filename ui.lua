@@ -28,8 +28,9 @@ local main = basalt.getMainFrame()
 
 -- states
 local navigation = basalt.state({})
-local connection_status = basalt.state("...")
-local connection_status_color = basalt.state(colors.gray)
+local connection_timer = basalt.state(0)
+local connected_computer = basalt.state(nil)
+local vault_state = basalt.state(nil)
 
 -- page nav logic
 local content_frame
@@ -89,43 +90,52 @@ function add_vault_display(frame)
     end
 end
 
--- networking
-local network_queue = {
-    first = 0,
-    last = -1,
-    co = nil
-}
-function network_queue.push(self, fn)
-    self[network_queue.last + 1] = fn
-    self.last = self.last + 1
-    if not co or coroutine.status(co) == "dead" then
-        basalt.schedule(function()
-            self:continue()
-        end)
-    end
-end
-function network_queue:continue()
-    if self.first <= self.last then
-        self[self.first]()
-        self.first = self.first + 1
-    end
-end
 
+function try_connect()
+    connected_computer:set(rednet.lookup("vault", config.hostname))
+end
 function set_hostname(hostname)
     config.hostname = hostname
-    connected_computer = nil
+    connected_computer:set(nil)
     save_config()
-    network_queue:push(function()
-        connected_computer = rednet.lookup("vault", config.hostname) 
-        if connected_computer then
-            connection_status:set("...")
-            connection_status_color:set(colors.green)
-        else
-            connection_status:set("!!!")
-            connection_status_color:set(colors.red)
-        end
-    end)
+    try_connect()
+    if connected_computer:get() then
+        rednet.send(connected_computer:get(), "get pulse timer", "vault")
+    end
 end
+basalt.schedule(function()
+    while true do
+        if connected_computer then
+            sleep(1)
+            connection_timer:set(connection_timer:get() + 1)
+        else
+            try_connect()
+            sleep(3)
+        end
+
+    end
+end)
+-- handle messages
+local message_handle = {
+    ["vault state response"] = function(data) 
+        vault_state:set(data)
+        connection_timer:set(0)
+    end,
+    ["pulse timer"] = function(data)
+        pulse_timer:set(data)
+    end,
+    ["vault tick"] = function(data)
+        rednet.send(connected_computer:get(), "vault state", "vault")
+    end
+}
+main:on("rednet_message", function(self, p1, p2, p3)
+    if p1 == connected_computer:get() and p3 == vault then
+        local message = p2
+        if message_handle[message.type] then
+            message_handle[message.type](message.data)
+        end
+    end
+end)
 
 function make_connection_dialog(frame)
     local a = frame:addColumn({
@@ -211,13 +221,24 @@ local status = bottom:addRow({
 })
 
 -- connection indicator
-local connected_computer = nil
 local pulse_timer = nil
 
 local connection_indicator = status:addLabel({
-    text = connection_status:map(function(value) return value end),
+    text = basalt.computed(function()
+        if connected_computer:get() then
+            return connection_timer:get()
+        else
+            return "!!!"
+        end
+    end),
     width = 3,
-    background = connection_status_color:map(function(value) return value end),
+    background = basalt.computed(function()
+        if connected_computer:get() then
+            return colors.green
+        else
+            return colors.red
+        end
+    end),
     align = "center",
 })
 
@@ -231,8 +252,7 @@ bottom:addButton({
 })
 
 -- update connection
-
+try_connect()
 
 -- add_vault_display(main)
-
 basalt.run()

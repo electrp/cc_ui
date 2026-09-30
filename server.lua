@@ -73,7 +73,7 @@ function local_server()
         local event, p1, p2, p3, p4 = os.pullEvent()
         if event == "timer" and p1 == timer_id then
             stock_data = sp.process_all()
-            rednet.broadcast({type = "vault tick"}, "vault")
+            rednet.broadcast({type = "vault tick", data = { pulse_timer = pulse_timer }}, "vault")
             timer_id = os.startTimer(config.pulse_timer)
         elseif event == "rednet_message" and p3 == "vault" then
             sender = p1
