@@ -229,8 +229,7 @@ local pulse_timer = nil
 local connection_indicator = status:addLabel({
     text = basalt.computed(function()
         if connected_computer:get() then
-            -- return connection_timer:get()
-            return connected_computer:get()
+            return connection_timer:get()
         else
             return "!!!"
         end
