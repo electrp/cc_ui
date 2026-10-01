@@ -10,7 +10,8 @@ local metadata_options = {
 
 local default_metadata = {
     pool = nil,
-    max_stacks = nil
+    max_stacks = nil,
+    exists = true
 }
 
 local function deep_copy(a)
