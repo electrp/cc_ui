@@ -126,10 +126,14 @@ end
 
 function make_vault_inspector(vault_name)
     return function (frame)
+        local a = frame:addColumn({
+            width = basalt.fill(),
+            height = basalt.fill(),
+        })
         local is_online = function()
             return vault_state:get()[vault_name]
         end       
-        local online = frame:addLabel({
+        local online = a:addLabel({
             text = basalt.computed(function()
                 if is_online() then return "Online"
                 else return "Offline"
@@ -142,7 +146,7 @@ function make_vault_inspector(vault_name)
             end),
         })
 
-        local item_table = frame:addTable({
+        local item_table = a:addTable({
             width = basalt.fill(),
             height = basalt.fill(),
             columns = {
