@@ -43,7 +43,8 @@ end
 
 sp.process_inventory = function(table)
     out = {
-        meta = deep_copy(default_metadata)
+        meta = deep_copy(default_metadata),
+        items = {}
     }
 
     for i, value in ipairs(table) do
@@ -56,7 +57,7 @@ sp.process_inventory = function(table)
         end 
 
         local hash = sp.hash_item(value)
-        out[hash] = value
+        out.items[hash] = value
     end
     
     return out

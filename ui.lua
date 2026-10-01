@@ -159,7 +159,7 @@ function make_vault_inspector(vault_name)
             item_table:clearData()
             local data = vault_state:get()[vault_name]
             if not data then return end
-            for i, item in ipairs(data) do
+            for hash, item in pairs(data.items) do
                 item_table:addRow({item.displayName, item.count})
             end
         end
