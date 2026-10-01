@@ -29,7 +29,7 @@ local main = basalt.getMainFrame()
 -- states
 local navigation = basalt.state({})
 local connected_computer = basalt.state(nil)
-local vault_state = basalt.state(nil)
+local vault_state = basalt.state({})
 
 -- TODO: Testing remove
 local f = fs.open("cc_ui/example_inventory.json", "r")
@@ -71,8 +71,8 @@ function push_page(frame_function, title)
         width = basalt.fill(),
         height = basalt.fill()
     })
-    frame_function(outer)
-    n[#n+ 1] = { title = title, frame = outer}
+    local cleanup = frame_function(outer)
+    n[#n+ 1] = { title = title, frame = outer, cleanup = cleanup }
     navigation:set(n)
 end
 function pop_page()
@@ -81,6 +81,9 @@ function pop_page()
         return
     end
     n[#n].frame.visible = false
+    if n[#n].cleanup then
+        n[#n].cleanup()
+    end
     n[#n] = nil
     n[#n].frame.visible = true
     navigation:set(n)
@@ -110,13 +113,61 @@ function add_vault_display(frame)
             justification = "center"
         })
         if type(name) == "number" then
-            button:setText("LOST: " .. tostring(name))
+            button:setText("UNNAMED " .. tostring(name))
         else
             button:setText(name)
         end
+
+        button:onClick(function()
+            push_page(make_vault_inspector(name), name)
+        end)
     end
 end
 
+function make_vault_inspector(vault_name)
+    return function (frame)
+        local is_online = function()
+            return vault_state:get()[vault_name]
+        end       
+        local online = frame:addLabel({
+            text = basalt.computed(function()
+                if is_online() then return "Online"
+                else return "Offline"
+                end
+            end),
+            background = basalt.computed(function()
+                if is_online() then return colors.green
+                else return colors.red
+                end
+            end),
+        })
+
+        local item_table = frame:addTable({
+            width = basalt.fill(),
+            height = basalt.fill(),
+            columns = {
+                {title = "Display"},
+                {title = "Count", minWidth = 6},
+            },
+        })
+        item_table:sortBy(2, false)
+        local update_item_table = function() 
+            item_table:clearData()
+            local data = vault_state:get()[vault_name]
+            if not data then return end
+            for i, item in ipairs(data) do
+                item_table:addRow({item.displayName, item.count})
+            end
+        end
+        local unsubscribe_update_table = vault_state:subscribe(update_item_table, true)
+        
+
+        -- cleanup function
+        return function()
+            unsubscribe_update_table()
+        end
+    end
+end
 
 function try_connect()
     connected_computer:set(rednet.lookup("vault", config.hostname))
@@ -128,6 +179,7 @@ function set_hostname(hostname)
     try_connect()
     if connected_computer:get() then
         rednet.send(connected_computer:get(), "get pulse timer", "vault")
+        rednet.send(connected_computer:get(), "vault state", "vault")
     end
 end
 
