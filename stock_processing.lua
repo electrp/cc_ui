@@ -48,7 +48,7 @@ sp.process_inventory = function(table)
     for i, value in ipairs(table) do
         -- renamed
         if value.name == "minecraft:stick" then
-            local k, v = value.displayName:match("(%a+)=(%a+)")
+            local k, v = value.displayName:match("(%w+)=(%w+)")
             if k then
                 out.meta[k] = v
             end
