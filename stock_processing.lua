@@ -43,7 +43,7 @@ end
 
 sp.process_inventory = function(table)
     out = {
-        meta = deep_copy(default_metadata),
+        meta = {},
         items = {}
     }
 
