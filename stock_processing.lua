@@ -3,6 +3,16 @@ local md5 = require("md5")
 local sp = {
 }
 
+local metadata_options = { 
+    ["Pool"] = {data = "pool"},
+    ["Max Stacks"] = {data = "max_stacks"}
+}
+
+local default_metadata = {
+    pool = nil,
+    max_stacks = nil
+}
+
 local function deep_copy(a)
     local orig_type = type(orig)
     local copy
@@ -31,11 +41,13 @@ sp.hash_item = function(item)
 end
 
 sp.process_inventory = function(table)
-    out = {}
+    out = {
+        meta = default_metadata
+    }
 
     for i, value in ipairs(table) do
         -- renamed
-        if value.name == "minecraft.stick" then
+        if value.name == "minecraft:stick" then
             local k, v = value.displayName:match("(%a+)=(%a+)")
             if k then
                 out.meta[k] = v

@@ -31,6 +31,11 @@ local navigation = basalt.state({})
 local connected_computer = basalt.state(nil)
 local vault_state = basalt.state(nil)
 
+-- TODO: Testing remove
+local f = fs.open("cc_ui/example_inventory.json", "r")
+vault_state:set(textutils.unserializeJSON(f.readAll()))
+f.close()
+
 -- handle messages
 local message_handle = {
     ["vault state response"] = function(data) 
@@ -93,7 +98,7 @@ function add_vault_display(frame)
         local row = scroll:addRow({
             height = 1
         })
-        local button = row:addButton({
+        local button = row:addLabel({
             height = 1,
             width = basalt.fill(),
             justification = "left"
@@ -101,7 +106,7 @@ function add_vault_display(frame)
         local percent = row:addLabel({
             width = 2,
             height = 1,
-            text = "50",
+            text = "??",
             justification = "center"
         })
         if type(name) == "number" then

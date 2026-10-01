@@ -1,4 +1,4 @@
-[
+{"a": [
     {
         "tags": {},
         "name": "hybrid-aquatic:sea_message_book",
@@ -610,4 +610,4 @@
         "maxCount": 64,
         "displayName": "Limestone"
     }
-]
+]}
