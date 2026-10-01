@@ -42,7 +42,7 @@ end
 
 sp.process_inventory = function(table)
     out = {
-        meta = default_metadata
+        meta = deep_copy(default_metadata)
     }
 
     for i, value in ipairs(table) do
