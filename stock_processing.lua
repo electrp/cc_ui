@@ -3,6 +3,23 @@ local md5 = require("md5")
 local sp = {
 }
 
+if not fs.exists("stock_modifier.lua") then
+    local f = fs.open("stock_modifier.lua", "w")
+    f.write(
+[[
+local mod = {}
+
+mod.modify_inventory = function(name, inv)
+    return {name .. "!", inv}
+end
+
+return mod
+]]
+    )
+    f.close()
+end
+sp.overlay = dofile("stock_modifier.lua")
+
 local metadata_options = { 
     ["Pool"] = {data = "pool"},
     ["Max Stacks"] = {data = "max_stacks"}
@@ -13,21 +30,6 @@ local default_metadata = {
     max_stacks = nil,
     exists = true
 }
-
-local function deep_copy(a)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-            copy[deepCopy(orig_key)] = deepCopy(orig_value)
-        end
-        setmetatable(copy, deepCopy(getmetatable(orig)))
-    else 
-        copy = orig
-    end
-    return copy
-end
 
 sp.hash_item = function(item)
     -- We erase but save the count
@@ -113,6 +115,7 @@ sp.process_all = function()
             value = tickers[j + i - 1]
             funcs[j] = function() 
                 local inv = sp.process_inventory(tickers[i + j - 1].stock(true))
+                inv.meta.name, inv = sp.modify_inventory(inv.meta.name, inv)
                 if inv and inv.meta and inv.meta.name then
                     out[inv.meta.name] = inv
                 else
