@@ -10,7 +10,7 @@ if not fs.exists("stock_modifier.lua") then
 local mod = {}
 
 mod.modify_inventory = function(name, inv)
-    return {name .. "!", inv}
+    return name, inv
 end
 
 return mod
