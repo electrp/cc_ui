@@ -46,7 +46,8 @@ end
 sp.process_inventory = function(table)
     out = {
         meta = {},
-        items = {}
+        items = {},
+        slots_used = 0,
     }
 
     for i, value in ipairs(table) do
@@ -61,6 +62,8 @@ sp.process_inventory = function(table)
 
         local hash = sp.hash_item(value)
         out.items[hash] = value
+
+        out.slots_used = out.slots_used + math.ceil(value.count / value.maxCount)
     end
     
     return out

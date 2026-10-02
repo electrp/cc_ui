@@ -115,7 +115,12 @@ function add_vault_display(frame)
                 sname = name
             end
 
-            table:addRow({sname, "????"})
+            local percent = ""
+            if value.meta.max_stacks then
+                percent = tostring(math.floor(value.slots_used / value.meta.max_stacks))
+            end
+
+            table:addRow({sname, percent})
         end
     end
     local unsubscribe = vault_state:subscribe(update_item_table, true)
