@@ -115,7 +115,7 @@ sp.process_all = function()
             value = tickers[j + i - 1]
             funcs[j] = function() 
                 local inv = sp.process_inventory(tickers[i + j - 1].stock(true))
-                inv.meta.name, inv = sp.modify_inventory(inv.meta.name, inv)
+                inv.meta.name, inv = sp.overlay.modify_inventory(inv.meta.name, inv)
                 if inv and inv.meta and inv.meta.name then
                     out[inv.meta.name] = inv
                 else
