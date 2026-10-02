@@ -55,6 +55,7 @@ sp.process_inventory = function(table)
                 out.meta[k] = v
             end
         end 
+        value.meta_item = true
 
         local hash = sp.hash_item(value)
         out.items[hash] = value

@@ -90,37 +90,102 @@ function pop_page()
 end
 
 function add_vault_display(frame)
-    local scroll = frame:addColumn({
-        scrollble = true,
-        scrollbar = "auto",
+    local table = frame:addTable({
+        -- scrollble = true,
+        -- scrollbar = "auto",
         width = basalt.fill(),
-        height = basalt.fill()
+        height = basalt.fill(),
+        columns = { 
+            { title = "Name" },
+            { title = "Fill", width = 5 }
+        }
     })
-    
-    for name, value in pairs(vault_state:get()) do
-        local row = scroll:addRow({
-            height = 1
-        })
-        local button = row:addLabel({
-            height = 1,
-            width = basalt.fill(),
-            justification = "left"
-        })
-        local percent = row:addLabel({
-            width = 2,
-            height = 1,
-            text = "??",
-            justification = "center"
-        })
-        if type(name) == "number" then
-            button:setText("UNNAMED " .. tostring(name))
-        else
-            button:setText(name)
-        end
 
-        button:onClick(function()
-            push_page(make_vault_inspector(name), name)
+    table:sortBy(1, false)
+    local update_item_table = function() 
+        table:clearData()
+        local data = vault_state:get()
+        if not data then return end
+
+        for name, value in pairs(vault_state:get()) do
+            local sname = "??"
+            if type(name) == "number" then
+                sname = tostring(name)
+            else
+                sname = name
+            end
+
+            table:addRow({sname, "????"})
+        end
+    end
+    local unsubscribe = vault_state:subscribe(update_item_table, true)
+    
+    table:onSelect(function(self, index, row)
+        push_page(make_vault_inspector(row[1]), row[1])
+    end)
+
+    return function()
+        unsubscribe()
+    end
+end
+
+function item_manage_menu(vault_name, item_name, item_hash)
+    return function(frame)
+        local item = basalt.computed(function()
+            local vault = vault_state:get()[vault_name]
+            if not vault then return nil end
+            local item = vault.items[item_hash]
+            return item
         end)
+        local prev_max = item:get().count
+        local max_amount = basalt.computed(function()
+            if item then 
+                return item:get().count 
+            else 
+                return prev_max 
+            end 
+        end)
+        
+        local send_amount = basalt.state(1)
+        local a = frame:addColumn({
+            width = basalt.fill(),
+            height = basalt.fill()
+        })
+
+        a:addLabel({
+            text = max_amount:map(function(v) if v then return tostring(v) else return "??" end end)
+        })
+
+        local text_input = basalt.state("1")
+        local input a:addInput({
+            width = basalt.fill(),
+            height = 1,
+            text = tostring(send_amount:get())
+        })
+        :bind("text", text_input)
+        :onChange(function(self)
+            local v = tonumber(text_input)
+            if v then send_amount:set(sent_amount) end
+        end)
+        local slider = a:addSlider({
+            width = basalt.fill(),
+            min = 0,
+            max = max_amount,
+            value = 1
+        })
+        :bind("value", send_amount)
+
+        local button = a:addButton({
+            text = basalt.computed(function()
+                return "Send " .. send_amount:get() 
+            end)
+        })
+        :onClick(function(self, button, x, y)
+
+            pop_page()
+        end)
+        
+
     end
 end
 
@@ -130,10 +195,15 @@ function make_vault_inspector(vault_name)
             width = basalt.fill(),
             height = basalt.fill(),
         })
+        local aa = frame:addRow({
+            width = basalt.fill(),
+            height = 1,
+        })
+
         local is_online = function()
             return vault_state:get()[vault_name]
         end       
-        local online = a:addLabel({
+        local online = aa:addLabel({
             text = basalt.computed(function()
                 if is_online() then return "Online"
                 else return "Offline"
@@ -144,6 +214,12 @@ function make_vault_inspector(vault_name)
                 else return colors.red
                 end
             end),
+            widh
+        })
+        local send = aa:addButton({
+            height = 1,
+            padding = 0,
+            text = "Send"
         })
 
         local item_table = a:addTable({
@@ -151,7 +227,8 @@ function make_vault_inspector(vault_name)
             height = basalt.fill(),
             columns = {
                 {title = "Display"},
-                {title = "Count", minWidth = 6},
+                {title = "Count", minWidth = 6, width = 6},
+                {title = "Hash", width = 0, visible = false},
             },
         })
         item_table:sortBy(2, false)
@@ -160,11 +237,15 @@ function make_vault_inspector(vault_name)
             local data = vault_state:get()[vault_name]
             if not data then return end
             for hash, item in pairs(data.items) do
-                item_table:addRow({item.displayName, item.count})
+                item_table:addRow({item.displayName, item.count, hash})
             end
         end
         local unsubscribe_update_table = vault_state:subscribe(update_item_table, true)
-        
+
+        send:onClick(function(self, button, x, y)
+            local selected = item_table:getSelectedRow()
+            push_page(item_manage_menu(vault_name, selected[1], selected[3]), selected[1])
+        end)
 
         -- cleanup function
         return function()
