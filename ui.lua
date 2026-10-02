@@ -117,7 +117,7 @@ function add_vault_display(frame)
 
             local percent = ""
             if value.meta.max_stacks then
-                percent = tostring(math.floor(value.slots_used / value.meta.max_stacks))
+                percent = tostring(math.floor(value.slots_used / value.meta.max_stacks * 100))
             end
 
             table:addRow({sname, percent})
