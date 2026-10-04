@@ -1,5 +1,7 @@
 local md5 = require("md5")
 
+-- TODO: change to new format in example_inventory
+
 local sp = {
 }
 
@@ -43,27 +45,38 @@ sp.hash_item = function(item)
     return hash
 end
 
-sp.process_inventory = function(table)
+sp.process_inventory = function(table, tempid, item_table)
     out = {
         meta = {},
         items = {},
         slots_used = 0,
     }
 
-    for i, value in ipairs(table) do
+    for i, item in ipairs(table) do
         -- renamed
-        if value.name == "minecraft:stick" then
-            local k, v = value.displayName:match("(%w+)=(%w+)")
+        if item.name == "minecraft:stick" then
+            local k, v = item.displayName:match("(%w+)=(%w+)")
             if k then
                 out.meta[k] = v
             end
         end 
-        value.meta_item = true
+        item.meta_item = true
 
-        local hash = sp.hash_item(value)
-        out.items[hash] = value
+        local hash = sp.hash_item(item)
+        out.items[hash] = item.count
+        local item_store = item_table[hash]
+        if not item_store then
+            -- this does technically refererence, but this is ok because our item source
+            -- is temporary
+            item_table[hash] = item
+            item_store = item_table[hash]
+            item_store.sources_id = {}
+            item_store.count = 0
+        end
+        item_store.sources_id[tempid] = item.count
+        item_store.count = item_store.count + item.count
 
-        out.slots_used = out.slots_used + math.ceil(value.count / value.maxCount)
+        out.slots_used = out.slots_used + math.ceil(item.count / value.maxCount)
     end
     
     return out
@@ -105,10 +118,10 @@ end
 --     for hash, v
 -- end
 
-
 sp.process_all = function()
     local tickers = { peripheral.find("Create_StockTicker") } 
-    local out = {}
+    local out = { nodes = {}, items = {} }
+    local node_names = {}
     -- use parallel to do this a lot faster, in chunks of 32
     -- stock tickers take around a tick to report their stock at minimum, this queues 
     -- them to happen a lot faster
@@ -117,17 +130,46 @@ sp.process_all = function()
         for j = 1, math.min(#tickers - i + 1, 32) do
             value = tickers[j + i - 1]
             funcs[j] = function() 
-                local inv = sp.process_inventory(tickers[i + j - 1].stock(true))
+                local inv = sp.process_inventory(tickers[i + j - 1].stock(true), i + j - 1, out.items)
+                -- modify based on user function
                 inv.meta.name, inv = sp.overlay.modify_inventory(inv.meta.name, inv)
-                if inv and inv.meta and inv.meta.name then
-                    out[inv.meta.name] = inv
-                else
-                    out[i + j - 1] = inv
+                
+                if not inv.meta.name then
+                    -- use tempid as name if none provided
+                    inv.meta.name = tostring(i + j - 1)
                 end
+                node_names[j + i - 1] = inv.meta.name
+
+
+                -- save to out
+                out.nodes[inv.meta.name] = inv
+        end
+    end
+    parallel.waitForAll(table.unpack(funcs))
+
+    -- re-specify item back referecnes to not use temp ids 
+    for i, item in out.items do
+        item.sources = {}
+        for id, count in item.sources_id do
+            item.sources[node_names[item.sources_id]] = count
+        end
+        item.sources_id = nil
+    end
+
+    -- calculate pools
+    -- pools = { <pool_name> = { <inv1>, <inv2> } }
+    local pools = {}
+    for key, inv in pairs(out) do
+        local pool = inv.meta.pool
+        if pool then
+            if not pools[pool] then pools[pool] = {} end
+            local a = pools[pool]
+                a[#a + 1] = k
             end
         end
-        parallel.waitForAll(table.unpack(funcs))
     end
+    
+
     return out
     -- apply settings overlay
 end
